@@ -1,5 +1,4 @@
 # Django settings for osmtask project.
-
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -45,17 +44,17 @@ USE_L10N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = '/Users/tlpinney/project/osmtask/media'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = '/media'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+ADMIN_MEDIA_PREFIX = '/admin_media/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '(lgka2wtzypxi*-z8+!)_o(8n7j26fsl7k=rff-y&j#46q+6d^'
@@ -81,9 +80,14 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    '/Users/tlpinney/project/osmtask/templates'
 )
 
+LOGIN_URL="accounts/login/"
+
+
 INSTALLED_APPS = (
+    'task',
     'django.contrib.gis',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -91,6 +95,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
+
+
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
 )

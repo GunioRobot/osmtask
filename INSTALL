@@ -1,3 +1,4 @@
-Checkout openlayers trunk into media directory.
+Create media directory in this directory and checkout openlayers trunk.
 Change paths in settings.py and urls.py to go the appropriate place.
+Requires GDAL.
 
