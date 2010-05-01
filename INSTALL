@@ -1,0 +1,3 @@
+Checkout openlayers trunk into media directory.
+Change paths in settings.py and urls.py to go the appropriate place.
+

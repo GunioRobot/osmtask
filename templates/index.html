@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="EN">
+  <head>
+    <style>
+      html,body {
+      height: 99%;
+      width: 99%;
+      }
+      #map {
+      width: 100%;
+      height: 100%;
+      border: 1px solid black;
+      }
+      </style>
+    <script src='http://openlayers.org/api/OpenLayers.js'></script>
+    <script src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
+    
+
+    <script>
+
+    var map, vectors, f;
+
+    function init() {
+
+    
+              map = new OpenLayers.Map ("map", {
+                controls:[
+                    new OpenLayers.Control.Navigation(),
+                    new OpenLayers.Control.PanZoomBar(),
+                    new OpenLayers.Control.Attribution()],
+                maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
+                maxResolution: 156543.0399,
+                numZoomLevels: 19,
+                units: 'm',
+                projection: new OpenLayers.Projection("EPSG:900913"),
+                displayProjection: new OpenLayers.Projection("EPSG:4326")
+            } );
+
+      osm_mapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
+      vectors = new OpenLayers.Layer.Vector("Vector Layer", { projection: new OpenLayers.Projection("EPSG:900913") });      
+
+      map.addLayer(osm_mapnik);
+      map.addLayer(vectors);
+      map.zoomToMaxExtent();
+
+    OpenLayers.loadURL("api/0.1/tasks.json", {}, null, function(r) {
+        var p = new OpenLayers.Format.GeoJSON();
+        f = p.read(r.responseText);
+        vectors.addFeatures(f);
+      });
+
+        
+
+    }
+
+    </script>
+
+    </head>
+  <body onload="init()">
+    <div id='map'></div>
+    </body>
+</html>
+
+
+
