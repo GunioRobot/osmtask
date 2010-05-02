@@ -125,8 +125,8 @@ cookiename+"="+mapcenter.lat+"|"+mapcenter.lon+"|"+map.getZoom();
 
               map = new OpenLayers.Map ("map", {
                 controls:[
-                    // new OpenLayers.Control.Navigation(),
-                    // new OpenLayers.Control.PanZoomBar(),
+                    new OpenLayers.Control.Navigation(),
+                    new OpenLayers.Control.PanZoomBar(),
                     new OpenLayers.Control.Attribution(),
                     new OpenLayers.Control.LayerSwitcher(),
                     new OpenLayers.Control.ScaleLine(),
@@ -149,7 +149,23 @@ cookiename+"="+mapcenter.lat+"|"+mapcenter.lon+"|"+map.getZoom();
       vectors = new OpenLayers.Layer.Vector("Checkout", { projection: new OpenLayers.Projection("EPSG:900913") });      
       v_completed = new OpenLayers.Layer.Vector("Completed", { projection: new OpenLayers.Projection("EPSG:900913") });
       
-      selectControl = new OpenLayers.Control.SelectFeature([vectors], {'toggle' : true, 'clickout' : true});
+      cSelect = function(feature) { 
+        // alert('selected feature');
+        //$('id_selected').value = feature 
+	// debug1 = feature
+	$('id_selected').value = "Owner:" + feature.data.user; 	    
+      }
+
+      cOut = function(feature) {
+         // clear out the selected feature box 
+         $('id_selected').value = "";
+      }
+
+    
+
+      selectControl = new OpenLayers.Control.SelectFeature([vectors], {'toggle' : true, 'clickout' : true, onSelect: cSelect, onUnselect: cOut });
+
+
       map.addControl(selectControl);
       map.addControl(control);
       map.addLayer(osm_mapnik);
@@ -228,6 +244,8 @@ cookiename+"="+mapcenter.lat+"|"+mapcenter.lon+"|"+map.getZoom();
 	 this page is loaded -->
     <input type="button" value="Save Default Location" onclick="setCookie()" />
     Status: <input id="id_status" type="text" value="" />
+    <br/>
+    Selected Feature: <input style="width:300px" id="id_selected" type="text" value="" />
 
       
 
