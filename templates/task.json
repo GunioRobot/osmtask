@@ -1,0 +1,7 @@
+{ "type": "Feature",
+  "id" : {{ co.id }},
+   "geometry" : {{ co.geojson|safe }},
+   "properties" : {
+      "user" : "{{ co.user.username }}"
+   }
+}
