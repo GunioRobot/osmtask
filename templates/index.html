@@ -15,6 +15,7 @@
       }
       </style>
     <script src='http://openlayers.org/api/OpenLayers.js'></script>
+    <script src='/media/proj4js/lib/proj4js.js'></script>
     <script src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
     
 
@@ -24,7 +25,45 @@
 
     var expiredays = 7;
     var cookiename = "osmdefaultlocation";
-    
+    var ll, ur;
+    var epsg4326, epsg900913;
+
+
+
+    // selection of checkout adapted from openlayers/examples/custom-control.html
+
+
+ var control = new OpenLayers.Control();
+                OpenLayers.Util.extend(control, {
+                    draw: function () {
+                        // this Handler.Box will intercept the shift-mousedown
+                        // before Control.MouseDefault gets to see it
+                        this.box = new OpenLayers.Handler.Box( control,
+                            {"done": this.notice},
+                            {keyMask: OpenLayers.Handler.MOD_SHIFT});
+                        this.box.activate();
+                    },
+
+                    notice: function (bounds) {
+                        ll = map.getLonLatFromPixel(new OpenLayers.Pixel(bounds.left, bounds.bottom)); 
+                        ur = map.getLonLatFromPixel(new OpenLayers.Pixel(bounds.right, bounds.top)); 
+                       // convert to 4326 bounds
+                       ll.transform(epsg900913, epsg4326);
+                       ur.transform(epsg900913, epsg4326);
+
+                       bbox =  ll.lon.toFixed(4) + ", ";   
+                       bbox += ll.lat.toFixed(4) + ", "; 
+                       bbox += ur.lon.toFixed(4) + ", "; 
+                       bbox += ur.lat.toFixed(4);
+
+                       $('id_checkout').value = bbox;
+
+                       
+                       
+                    }
+                });
+
+
 
     // cookie functionality adapted  from 
     // http://openlayers.org/pipermail/users/2010-February/016446.html
@@ -76,6 +115,9 @@ cookiename+"="+mapcenter.lat+"|"+mapcenter.lon+"|"+map.getZoom();
 
 
     function init() {
+           epsg900913 = new OpenLayers.Projection("EPSG:900913");
+           epsg4326 = new OpenLayers.Projection("EPSG:4326");
+
 
               map = new OpenLayers.Map ("map", {
                 controls:[
@@ -87,8 +129,9 @@ cookiename+"="+mapcenter.lat+"|"+mapcenter.lon+"|"+map.getZoom();
                     new OpenLayers.Control.Permalink('permalink'),
                     new OpenLayers.Control.MousePosition(),
                     new OpenLayers.Control.OverviewMap(),
-                    new OpenLayers.Control.NavToolbar(),
-                    new OpenLayers.Control.ZoomIn()],
+                    // new OpenLayers.Control.NavToolbar(),
+//                    new OpenLayers.Control.ZoomIn()
+],
                    
                 maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
                 maxResolution: 156543.0399,
@@ -103,7 +146,7 @@ cookiename+"="+mapcenter.lat+"|"+mapcenter.lon+"|"+map.getZoom();
       v_completed = new OpenLayers.Layer.Vector("Completed", { projection: new OpenLayers.Projection("EPSG:900913") });
       
 
-
+      map.addControl(control);
       map.addLayer(osm_mapnik);
       map.addLayer(vectors);
       map.addLayer(v_completed);
@@ -129,7 +172,8 @@ cookiename+"="+mapcenter.lat+"|"+mapcenter.lon+"|"+map.getZoom();
   <body onload="init()">
     <h1>OSM Tasking Server</h1>
 
-    Bounding Box: <input type="text" value="" />
+    Hold down <b>SHIFT</b> to select a bounding box area for checkout | 
+    Bounding Box: <input style="width:300px" id="id_checkout" type="text" value="" />
     <!-- This will store a cookie which will go to the location first time 
 	 this page is loaded -->
     <input type="button" value="Save Default Location" onclick="setCookie()" />

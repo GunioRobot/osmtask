@@ -1,4 +1,7 @@
 Create media directory in this directory and checkout openlayers trunk.
+Unzip proj4s into media also.
+http://trac.osgeo.org/proj4js/attachment/wiki/Download/proj4js-1.0.0.zip?format=raw
+
 Change paths in settings.py and urls.py to go the appropriate place.
 Requires GDAL.
 
