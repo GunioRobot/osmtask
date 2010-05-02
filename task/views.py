@@ -10,10 +10,24 @@ from models import Checkout
 
 
 
+
+def task_json(request, id):
+    """ Return a particular checkout based on an id in geojson"""
+    # TODO: this needs to return 4326 instead 
+
+    co = Checkout.objects.transform(900913).get(id=int(id));    
+    # workaround 
+    co.geojson = co.geom.geojson    
+
+    return render_to_response("task.json", {"co" : co}, mimetype="application/json")
+
+
+
 def tasks_json(request):
+    """ Return all the checkouts in geojson """
     # seems like there is a bug where it doesn't transform the geojson string 
     # need to do it manually for now 
-    # this should also return 4326
+    # TODO: this should also return 4326
 
     qs = Checkout.objects.all().transform(900913)
 
@@ -29,7 +43,16 @@ def tasks_json(request):
 
 
 def checkout(request):
+    """ Checkout a bounding box and store it in the database """
     
+    # Needs to check if this overlaps with other checkboxes and send 
+    # the appropriate error message back
+    # Also there is a bug where a request is made with 
+    # http://foo.com/api/0.1/checkout?bbox
+    # an error occurs 
+
+
+
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/accounts/login/?next=%s' % request.path)
 

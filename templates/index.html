@@ -22,11 +22,14 @@
     <script>
 
     var map, vectors, f;
-
     var expiredays = 7;
     var cookiename = "osmdefaultlocation";
     var ll, ur;
     var epsg4326, epsg900913;
+
+
+    // debug variables 
+    var debug1;
 
 
 
@@ -166,6 +169,47 @@ cookiename+"="+mapcenter.lat+"|"+mapcenter.lon+"|"+map.getZoom();
 
     }
 
+    function checkout() {
+      //alert("checkout");
+
+     if ($('id_checkout').value == "") { 
+       alert('You need to select a bounding box to checkout');
+     }
+     else {
+       // send the bounding box to the server 
+       // this should make sure the bounding box is valid 
+       // create an ajax call to get the bounding box
+       // if it has been successful add the checkout to the 
+       // vector layer 
+   
+      
+      var url = "/api/0.1/checkout";
+
+      var params = {'bbox': $('id_checkout').value}
+
+      function handler(request) {
+        // alert(request.responseText);
+        //alert(request.status);
+        
+        if (request.status == 200) {
+          // the request was succesfull
+          var id = parseInt(request.responseText.split(":")[1].trim()); 
+	  // pull the vector back from the id and add it to the map 	
+			    
+     OpenLayers.loadURL("api/0.1/task/" + id + ".json", {}, null, function(r) {
+        //alert(r.responseText);
+        // debug1 = r;
+        var p = new OpenLayers.Format.GeoJSON();
+        var f2 = p.read(r.responseText);
+        //debug1 = f2;
+        vectors.addFeatures(f2);
+      });
+
+         }
+      }
+      OpenLayers.Request.GET({ url: url, params: params, callback: handler });
+     }
+    }
     </script>
 
     </head>
@@ -174,6 +218,8 @@ cookiename+"="+mapcenter.lat+"|"+mapcenter.lon+"|"+map.getZoom();
 
     Hold down <b>SHIFT</b> to select a bounding box area for checkout | 
     Bounding Box: <input style="width:300px" id="id_checkout" type="text" value="" />
+    <input type="button" value="Checkout" onclick="checkout()" />
+
     <!-- This will store a cookie which will go to the location first time 
 	 this page is loaded -->
     <input type="button" value="Save Default Location" onclick="setCookie()" />
