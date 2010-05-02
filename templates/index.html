@@ -22,9 +22,61 @@
 
     var map, vectors, f;
 
+    var expiredays = 7;
+    var cookiename = "osmdefaultlocation";
+    
+
+    // cookie functionality adapted  from 
+    // http://openlayers.org/pipermail/users/2010-February/016446.html
+    // permalink should supersede the cookie
+
+
+     // === Set the cookie before exiting ===
+      function setCookie() {
+    mapcenter = new OpenLayers.LonLat(map.getCenter().lon,
+map.getCenter().lat);
+        var cookietext =
+cookiename+"="+mapcenter.lat+"|"+mapcenter.lon+"|"+map.getZoom();
+        if (expiredays) {
+          var exdate=new Date();
+          exdate.setDate(exdate.getDate()+expiredays);
+          cookietext += ";expires="+exdate.toGMTString();
+        }
+      document.cookie = cookietext;    
+      // show the user that the cookie was set 
+      $('id_status').value = 'Cookie set successfully';
+
+      }
+
+    function checkCookie() {
+//      console.log('checking cookie');
+      
+      if (document.cookie.length>0) {
+        var c_list = document.cookie.split(';');
+
+        for (var i = 0; i < c_list.length; i++) {
+         //console.log(c_list); 
+         var c = c_list[i].trim().split("=");
+         //console.log(c);
+         if ( c[0] == 'osmdefaultlocation') {
+            //console.log("found default location");
+           bits = c[1].split("|");
+           lat = parseFloat(bits[0]);
+           lon = parseFloat(bits[1]);
+           zoom = parseInt(bits[2]);
+  
+           //console.log(lat + " " +  lon + " " + zoom );
+           //console.log('trying to set the center');
+           map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+         }
+        }
+      }
+  }
+     
+
+
     function init() {
 
-    
               map = new OpenLayers.Map ("map", {
                 controls:[
                     new OpenLayers.Control.Navigation(),
@@ -35,7 +87,9 @@
                     new OpenLayers.Control.Permalink('permalink'),
                     new OpenLayers.Control.MousePosition(),
                     new OpenLayers.Control.OverviewMap(),
+                    new OpenLayers.Control.NavToolbar(),
                     new OpenLayers.Control.ZoomIn()],
+                   
                 maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
                 maxResolution: 156543.0399,
                 numZoomLevels: 19,
@@ -55,6 +109,10 @@
       map.addLayer(v_completed);
       map.zoomToMaxExtent();
 
+      // see if there is a cookie that has the default location
+      checkCookie();
+
+
     OpenLayers.loadURL("api/0.1/tasks.json", {}, null, function(r) {
         var p = new OpenLayers.Format.GeoJSON();
         f = p.read(r.responseText);
@@ -69,6 +127,16 @@
 
     </head>
   <body onload="init()">
+    <h1>OSM Tasking Server</h1>
+
+    Bounding Box: <input type="text" value="" />
+    <!-- This will store a cookie which will go to the location first time 
+	 this page is loaded -->
+    <input type="button" value="Save Default Location" onclick="setCookie()" />
+    Status: <input id="id_status" type="text" value="" />
+
+      
+
     <div id='map'></div>
     </body>
 </html>
