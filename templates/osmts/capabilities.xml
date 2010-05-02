@@ -1,0 +1,5 @@
+<osmts version="0.1" generator="OSM Task Server">
+  <api>
+    <version minimum="0.1" maximum="0.1">
+  </api>
+</osmts>
