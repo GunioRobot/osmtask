@@ -2,6 +2,7 @@
   "id" : {{ co.id }},
    "geometry" : {{ co.geojson|safe }},
    "properties" : {
+      "id" : "{{ co.id }}",
       "user" : "{{ co.user.username }}"
    }
 }

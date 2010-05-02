@@ -4,6 +4,7 @@
     { "type": "Feature",
       "geometry" : {{ co.geojson|safe }},
       "properties" : {
+        "id" : {{ co.id }},
         "user" : "{{ co.user.username }}"
       }
     }

@@ -11,6 +11,26 @@ from models import Checkout
 
 
 
+def task(request, id):
+    id = int(id)
+    if request.method == 'DELETE':
+        print "requesting a delete"
+        # make sure the user has permission to delete 
+        if request.user.is_staff:
+            # staff can delete anything 
+            Checkout.objects.get(id=id).delete()
+            return HttpResponse('DELETED')
+        else:
+            # not authorized, normal users should be able to cancel 
+            # a checkin, but not delete anything 
+            return HttpResponse('Not authorized, must be staff, trying cancelling the checkin', status=401)
+
+
+    return HttpResponse("Method not allowed",status=405)
+
+
+
+
 def task_json(request, id):
     """ Return a particular checkout based on an id in geojson"""
     # TODO: this needs to return 4326 instead 

@@ -230,6 +230,39 @@ cookiename+"="+mapcenter.lat+"|"+mapcenter.lon+"|"+map.getZoom();
       OpenLayers.Request.GET({ url: url, params: params, callback: handler });
      }
     }
+
+    function deleteFeature() {
+      // get the selected feature and delete it 
+      var f = vectors.selectedFeatures[0]
+      
+     // make a call to delete teh featuer id 
+     // needs to use the DELETE part of ReST
+  
+     url = "/api/0.1/task/" + f.data.id 
+			    
+     var handler = function(request) { 
+        // alert('deleted feature')
+        if (request.status == 200) {
+           // it was deleted successfully 
+           // remove it from the vector layer 
+           // alert(f.data.id);
+	   vectors.removeFeatures([vectors.selectedFeatures[0]]);
+           return;
+        }
+        
+        if (request.status == 401) {
+           alert('You are not authorized to delete, try canceling your checkin');
+	   return;
+        }
+         
+        alert('Unknown error occured. Please contact administrator');       
+         
+     }
+
+     OpenLayers.Request.DELETE({ url: url, callback: handler } );
+    
+     }
+
     </script>
 
     </head>
@@ -246,6 +279,7 @@ cookiename+"="+mapcenter.lat+"|"+mapcenter.lon+"|"+map.getZoom();
     Status: <input id="id_status" type="text" value="" />
     <br/>
     Selected Feature: <input style="width:300px" id="id_selected" type="text" value="" />
+    <input type="button" value="Delete Selected Feature" onclick="deleteFeature()" />
 
       
 
