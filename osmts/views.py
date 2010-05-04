@@ -1,4 +1,6 @@
 from django.shortcuts import render_to_response 
+from django.contrib.gis.feeds import Feed 
+
 
 
 

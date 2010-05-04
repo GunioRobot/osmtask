@@ -7,8 +7,22 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required 
 from django.contrib.gis.gdal import Envelope
 from models import Checkout 
+#from django.contrib.gis.feeds import Feed
 
 
+
+#class CheckoutFeed(Feed):   
+#    title = "Checkout"
+#    link = "/feed"
+#    description = "Updates on changes in checkouts"
+    
+#    def items(self):
+#        return Ch
+
+    
+#    def item_geometry(self, obj):
+#        return obj.geom
+    
 
 
 def task(request, id):

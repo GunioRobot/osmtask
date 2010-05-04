@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="EN">
+  <head>
+    <script src='http://openlayers.org/api/OpenLayers.js'></script>
+    <script src='/media/proj4js/lib/proj4js.js'></script>
+    <script src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
+
+    <style>
+        #map {
+            height: 350px;
+        }
+    </style>
+
+<script>
+
+var map;
+
+
+function init(){ 
+
+
+              map = new OpenLayers.Map ("map", {
+                controls:[
+                    new OpenLayers.Control.Navigation(),
+                    new OpenLayers.Control.PanZoomBar(),
+                    new OpenLayers.Control.Attribution(),
+                    new OpenLayers.Control.LayerSwitcher(),
+                    new OpenLayers.Control.ScaleLine(),
+                    new OpenLayers.Control.Permalink('permalink'),
+                    new OpenLayers.Control.MousePosition(),
+                    new OpenLayers.Control.OverviewMap(),
+                    // new OpenLayers.Control.NavToolbar(),
+//                    new OpenLayers.Control.ZoomIn()
+],
+                   
+                maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
+                maxResolution: 156543.0399,
+                numZoomLevels: 19,
+                units: 'm',
+                projection: new OpenLayers.Projection("EPSG:900913"),
+                displayProjection: new OpenLayers.Projection("EPSG:4326")
+            } );
+
+           osm_mapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
+           map.addLayer(osm_mapnik);
+           map.zoomToMaxExtent();
+
+          gml = new OpenLayers.Layer.GML("OSM", "/media/osm/foo.xml", {format: OpenLayers.Format.OSM});
+          map.addLayer(gml);
+
+
+
+}
+  
+
+</script>
+  
+</head>
+
+<body onload="init()">
+
+<h1>View the OSM</h1>
+
+<div id="map" class="smallmap"></div>
+
+
+</body>
+</html>

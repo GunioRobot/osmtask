@@ -88,6 +88,7 @@ LOGIN_URL="accounts/login/"
 
 INSTALLED_APPS = (
     'task',
+    # 'osm',
     'django.contrib.gis',
     'django.contrib.admin',
     'django.contrib.auth',
