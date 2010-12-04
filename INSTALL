@@ -5,3 +5,13 @@ http://trac.osgeo.org/proj4js/attachment/wiki/Download/proj4js-1.0.0.zip?format=
 Change paths in settings.py and urls.py to go the appropriate place.
 Requires GDAL.
 
+Requires Postgres/PostGIS.
+Requires Django 1.2 
+You can follow the standard geodjango install.
+
+Tested 
+Tested with a Mac and spatialite
+
+
+
+

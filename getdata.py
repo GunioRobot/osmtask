@@ -16,10 +16,20 @@ from task.models import Density
 
 qs = Density.objects.all()
 
-print qs
+from lxml import etree
 
-d = qs[0]
 
-# make a request to OSM to retrieve the data for the first square
+for d in qs:
+    e = d.geom.extent
+    h = httplib2.Http()
+    resp, content = h.request("http://api.openstreetmap.org/api/0.6/map?bbox=%s,%s,%s,%s" % (e[0],e[1],e[2],e[3]) )
+    print content
+    root = etree.fromstring(content)
+    density = len(root.findall("node"))
+    d.density = density
+    d.save()
+    
+
+
 
 
