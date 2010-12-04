@@ -29,6 +29,13 @@ class Density(models.Model):
     z = models.IntegerField(default=15)
     density = models.IntegerField(default=0)
     objects = models.GeoManager()
+
+class Task(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.CharField(max_length=1024)
+    geom = models.PolygonField(srid=4326)
+    objects = models.GeoManager()
+
     
 
 
