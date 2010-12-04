@@ -1,0 +1,16 @@
+{ "type": "FeatureCollection",
+  "features": [
+  {% for d in qs %}
+    { "type": "Feature",
+      "geometry" : {{ d.geom.geojson|safe }},
+      "properties" : {
+        "id" : {{ d.id }}
+      }
+    }
+   {% if not forloop.last %},{% endif %} 
+  {% endfor %} 
+  ]
+}
+  
+
+  

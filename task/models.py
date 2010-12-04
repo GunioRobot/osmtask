@@ -22,7 +22,14 @@ class Commit(models.Model):
     objects = models.GeoManager()
 
 
-
+class Density(models.Model):
+    geom = models.PolygonField(srid=4326)
+    x = models.IntegerField()
+    y = models.IntegerField()
+    z = models.IntegerField(default=15)
+    density = models.IntegerField(default=0)
+    objects = models.GeoManager()
+    
 
 
 

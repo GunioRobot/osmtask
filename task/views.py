@@ -6,7 +6,8 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.models import User 
 from django.contrib.auth.decorators import login_required 
 from django.contrib.gis.gdal import Envelope
-from models import Checkout 
+from models import Checkout, Density
+
 #from django.contrib.gis.feeds import Feed
 
 
@@ -72,6 +73,16 @@ def tasks_json(request):
 
 
     return render_to_response("tasks.json", {"qs" : qs}, mimetype="application/json")
+
+def densities_json(request):
+    qs = Density.objects.all().transform(900913)
+
+    for d in qs:
+        d.geojson = d.geom.geojson
+
+        return render_to_response("densities.json", {"qs": qs}, mimetype="application/json")
+
+    
 
 
 

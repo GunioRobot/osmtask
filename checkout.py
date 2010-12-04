@@ -28,11 +28,17 @@ top = 4708358.5128406
 #print bl
 #print ur
 
-foo = OGRGeometry.from_bbox((left, bottom, right, top))
-print foo
-foo.srid = 900913
+blah = "-77.1321,38.7965,-76.8993,39.0033"
 
-foo.transform(4326)
+bblah = [ float(i) for i in blah.split(",")]
+
+Density.objects.all().delete()
+
+foo = OGRGeometry.from_bbox(bblah)
+#print foo
+#foo.srid = 900913
+
+#foo.transform(4326)
 print foo
 
 #import ipdb; ipdb.set_trace()
@@ -81,16 +87,16 @@ def num2deg(xtile, ytile, zoom):
    return(lat_deg, lon_deg)
 
 def num2deg(ytile):
-   n = 2.0 ** 15
+   n = 2.0 ** 14
    lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * ytile / n)))
    lat_deg = math.degrees(lat_rad)
    return lat_deg
 
 
 
-tlt = deg2num(bl[0], tr[1], 15)
-trt = deg2num(tr[0], tr[1], 15)
-tlb = deg2num(bl[0], bl[1], 15)
+tlt = deg2num(bl[0], tr[1], 14)
+trt = deg2num(tr[0], tr[1], 14)
+tlb = deg2num(bl[0], bl[1], 14)
 
 # get a list of all the tiles for the particular zoom level, scanning from left to right then going down
 #print tlt
@@ -133,7 +139,7 @@ for foo in matrix:
     #sys.exit()
     
     #print foo[1] *  0.0054931640625
-    bbox = (foo[0] * 0.010986328125 - 180, num2deg(foo[1] + 1), (foo[0] + 1) * 0.010986328125 - 180, num2deg(foo[1]))
+    bbox = (foo[0] * 0.02197265625 - 180, num2deg(foo[1] + 1), (foo[0] + 1) * 0.02197265625 - 180, num2deg(foo[1]))
     print bbox
     dens  = OGRGeometry.from_bbox(bbox)
     dens.srid = 4326

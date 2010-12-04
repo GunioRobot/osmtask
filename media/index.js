@@ -102,6 +102,7 @@ cookiename+"="+mapcenter.lat+"|"+mapcenter.lon+"|"+map.getZoom();
 
               map = new OpenLayers.Map ("map", {
                 controls:[
+			  //new OpenLayers.Control.Graticule(),
                     new OpenLayers.Control.Navigation(),
                     new OpenLayers.Control.PanZoomBar(),
                     new OpenLayers.Control.Attribution(),
@@ -123,7 +124,9 @@ cookiename+"="+mapcenter.lat+"|"+mapcenter.lon+"|"+map.getZoom();
             } );
 
       osm_mapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
-      vectors = new OpenLayers.Layer.Vector("Checkout", { projection: new OpenLayers.Projection("EPSG:900913") });      
+      vectors = new OpenLayers.Layer.Vector("Checkout", { projection: new OpenLayers.Projection("EPSG:900913") }); 
+      density = new OpenLayers.Layer.Vector("Density", { projection: new OpenLayers.Projection("EPSG:900913") }); 
+     
       v_completed = new OpenLayers.Layer.Vector("Completed", { projection: new OpenLayers.Projection("EPSG:900913") });
       
       cSelect = function(feature) { 
@@ -153,6 +156,7 @@ cookiename+"="+mapcenter.lat+"|"+mapcenter.lon+"|"+map.getZoom();
       map.addLayer(osm_mapnik);
       map.addLayer(vectors);
       map.addLayer(v_completed);
+      map.addLayer(density);
       map.zoomToMaxExtent();
 
       // see if there is a cookie that has the default location
@@ -165,6 +169,12 @@ cookiename+"="+mapcenter.lat+"|"+mapcenter.lon+"|"+map.getZoom();
         var p = new OpenLayers.Format.GeoJSON();
         f = p.read(r.responseText);
         vectors.addFeatures(f);
+      });
+
+    OpenLayers.loadURL("api/0.1/densities.json", {}, null, function(r) {
+        var p = new OpenLayers.Format.GeoJSON();
+        f = p.read(r.responseText);
+        density.addFeatures(f);
       });
 
         
