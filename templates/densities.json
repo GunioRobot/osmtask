@@ -4,7 +4,8 @@
     { "type": "Feature",
       "geometry" : {{ d.geom.geojson|safe }},
       "properties" : {
-        "id" : {{ d.id }}
+        "id" : {{ d.id }},
+	"density" : {{ d.density }}
       }
     }
    {% if not forloop.last %},{% endif %} 
