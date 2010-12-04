@@ -35,6 +35,18 @@ class Task(models.Model):
     description = models.CharField(max_length=1024)
     geom = models.PolygonField(srid=4326)
     objects = models.GeoManager()
+    def __unicode__(self):
+        return self.title
+    
+
+
+class TaskCell(models.Model):
+    geom = models.PolygonField(srid=4326)
+    x = models.IntegerField()
+    y = models.IntegerField()
+    z = models.IntegerField(default=15)
+    task = models.ForeignKey(Task)
+    objects = models.GeoManager()
 
     
 
