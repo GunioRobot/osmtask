@@ -15,7 +15,7 @@
       }
       </style>
     <script src="http://openlayers.org/api/OpenLayers.js"></script>
-    <script src="/media/proj4js/lib/proj4js.js"></script>
+    <script src="http://proj4js.org/lib/proj4js.js"></script>
     <script src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
     <script>
     var map, vectors, f;
@@ -44,11 +44,21 @@ function onPopupClose(evt) {
 function onFeatureSelect(evt) {
     feature = evt.feature;
     foobar = feature.geometry;
+    var zoom = map.getZoomForExtent(feature.geometry.bounds);
+    var lonlat = feature.geometry.getBounds().getCenterLonLat();
+    lonlat2 = lonlat.clone();
+    lonlat2.transform(new
+    OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326"));
+    var lon = lonlat2.lon;
+    var lat = lonlat2.lat;
+
     popup = new OpenLayers.Popup.FramedCloud("featurePopup",
                              feature.geometry.getBounds().getCenterLonLat(),
                              new OpenLayers.Size(100,100),
-                             "<h2>Cell "+ feature.attributes.id +
-    '</h2><a target="_blank" href="http://geonerd.org/editor/potlatch2.html?grid=blah">Edit</a>', null, true, onPopupClose);
+                             '<h2>Cell ' + feature.attributes.id +
+                             '</h2><a target="_blank" href="http://geonerd.org/editor/potlatch2.html?grid=blah&zoom='
+                             + zoom + '&lon=' + lon + '&lat=' + lat +
+                             '" >Edit</a>', null, true, onPopupClose);
     feature.popup = popup;
     popup.feature = feature;
     map.addPopup(popup);
