@@ -6,7 +6,9 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.models import User 
 from django.contrib.auth.decorators import login_required 
 from django.contrib.gis.gdal import Envelope
-from models import Checkout, Density
+from models import Checkout, Density, Task, TaskCell
+
+
 
 #from django.contrib.gis.feeds import Feed
 
@@ -48,14 +50,16 @@ def task(request, id):
 
 def task_json(request, id):
     """ Return a particular checkout based on an id in geojson"""
-    # TODO: this needs to return 4326 instead 
+ 
+    qs = TaskCell.objects.transform(900913).filter(task=id)
+    print qs[0].geom
+    
+    return render_to_response("tasks.json", {"qs" : qs}, mimetype="application/json")
 
-    co = Checkout.objects.transform(900913).get(id=int(id));    
-    # workaround 
-    co.geojson = co.geom.geojson    
 
-    return render_to_response("task.json", {"co" : co}, mimetype="application/json")
-
+def task_bbox(request,id):
+    t = Task.objects.get(id=id)
+    return render_to_response("task_bbox.json", {"t": t}, mimetype="application/json")
 
 
 def tasks_json(request):
@@ -130,6 +134,11 @@ def cancel(request):
 
 def index(request):
     return render_to_response("index.html")
+
+
+def get_task(request, slug):
+    t = Task.objects.get(slug=slug)
+    return render_to_response("get_task.html", {'t': t})
 
 
 

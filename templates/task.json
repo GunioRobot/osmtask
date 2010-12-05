@@ -1,8 +1,13 @@
-{ "type": "Feature",
-  "id" : {{ co.id }},
-   "geometry" : {{ co.geojson|safe }},
-   "properties" : {
-      "id" : "{{ co.id }}",
-      "user" : "{{ co.user.username }}"
-   }
+{ "type": "FeatureCollection",
+  "features": [
+  {% for t in qs %}
+    { "type": "Feature",
+      "geometry" : {{ t.geom.geojson|safe }},
+      "properties" : {
+        "id" : {{ t.id }}
+      }
+    }
+   {% if not forloop.last %},{% endif %} 
+  {% endfor %} 
+  ]
 }

@@ -32,6 +32,7 @@ class Density(models.Model):
 
 class Task(models.Model):
     title = models.CharField(max_length=255)
+    slug = models.CharField(max_length=50,null=True)
     description = models.CharField(max_length=1024)
     geom = models.PolygonField(srid=4326)
     objects = models.GeoManager()
