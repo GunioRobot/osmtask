@@ -17,25 +17,153 @@
     <script src="http://openlayers.org/api/OpenLayers.js"></script>
     <script src="/media/proj4js/lib/proj4js.js"></script>
     <script src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
-    <script src="/media/index.js"></script>
+        <script>
+    var map, vectors, f;
+    var expiredays = 7;
+  
+    var ll, ur;
+    var epsg4326, epsg900913;
+    var selectControl;
+    var foobar;
+
+
+    // debug variables 
+    var debug1;
+
+
+
+    // selection of checkout adapted from openlayers/examples/custom-control.html
+
+
+ var control = new OpenLayers.Control();
+                OpenLayers.Util.extend(control, {
+                    draw: function () {
+                        // this Handler.Box will intercept the shift-mousedown
+                        // before Control.MouseDefault gets to see it
+                        this.box = new OpenLayers.Handler.Box( control,
+                            {"done": this.notice},
+                            {keyMask: OpenLayers.Handler.MOD_SHIFT});
+                        this.box.activate();
+                    },
+
+                    notice: function (bounds) {
+                        ll = map.getLonLatFromPixel(new OpenLayers.Pixel(bounds.left, bounds.bottom)); 
+                        ur = map.getLonLatFromPixel(new OpenLayers.Pixel(bounds.right, bounds.top)); 
+                       // convert to 4326 bounds
+                       ll.transform(epsg900913, epsg4326);
+                       ur.transform(epsg900913, epsg4326);
+
+                       bbox =  ll.lon.toFixed(4) + ", ";   
+                       bbox += ll.lat.toFixed(4) + ", "; 
+                       bbox += ur.lon.toFixed(4) + ", "; 
+                       bbox += ur.lat.toFixed(4);
+
+                       $('id_checkout').value = bbox;
+
+                       
+                       
+                    }
+                });
+
+// taken from http://docs.openlayers.org/library/overlays.html
+
+function onPopupClose(evt) {
+    // 'this' is the popup.
+    selectControl.unselect(this.feature);
+}
+function onFeatureSelect(evt) {
+    feature = evt.feature;
+    popup = new OpenLayers.Popup.FramedCloud("featurePopup",
+                             feature.geometry.getBounds().getCenterLonLat(),
+                             new OpenLayers.Size(100,100),
+                             "<h2>"+feature.attributes.title + "</h2>" +
+                             feature.attributes.description,
+                             null, true, onPopupClose);
+    feature.popup = popup;
+    popup.feature = feature;
+    map.addPopup(popup);
+}
+function onFeatureUnselect(evt) {
+    feature = evt.feature;
+    if (feature.popup) {
+        popup.feature = null;
+        map.removePopup(feature.popup);
+        feature.popup.destroy();
+        feature.popup = null;
+    }
+}
+/////////
+
+
+
+
+
+    function init() {
+           epsg900913 = new OpenLayers.Projection("EPSG:900913");
+           epsg4326 = new OpenLayers.Projection("EPSG:4326");
+
+
+              map = new OpenLayers.Map ("map", {
+                controls:[
+			  //new OpenLayers.Control.Graticule(),
+                    new OpenLayers.Control.Navigation(),
+                    new OpenLayers.Control.PanZoomBar(),
+                    new OpenLayers.Control.Attribution(),
+                    new OpenLayers.Control.LayerSwitcher(),
+                    new OpenLayers.Control.ScaleLine(),
+                    new OpenLayers.Control.Permalink('permalink'),
+                    new OpenLayers.Control.MousePosition(),
+                    new OpenLayers.Control.OverviewMap(),
+                    // new OpenLayers.Control.NavToolbar(),
+//                    new OpenLayers.Control.ZoomIn()
+],
+                   
+                maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
+                maxResolution: 156543.0399,
+                numZoomLevels: 19,
+                units: 'm',
+                projection: new OpenLayers.Projection("EPSG:900913"),
+                displayProjection: new OpenLayers.Projection("EPSG:4326")
+            } );
+
+      osm_mapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
+ 
+      task = new OpenLayers.Layer.Vector("Task", { projection: new OpenLayers.Projection("EPSG:900913") }); 
+      task.events.on({ 'featureselected': onFeatureSelect,
+                       'featureunselected': onFeatureSelect});
+      selectControl = new OpenLayers.Control.SelectFeature(task);
+
+      
+       
+
+      //selectControl = new OpenLayers.Control.SelectFeature([vectors], {'toggle' : true, 'clickout' : true, onSelect: cSelect, onUnselect: cOut });
+
+
+      map.addControl(selectControl);
+      map.addControl(control);
+      map.addLayer(osm_mapnik);
+      map.addLayer(task);
+     // map.zoomToMaxExtent();
+
+     selectControl.activate();
+
+    OpenLayers.loadURL("/api/0.1/tasks.json", {}, null, function(r) {
+        var p = new OpenLayers.Format.GeoJSON();
+        f = p.read(r.responseText);
+        task.addFeatures(f);
+       // console.log(task.getDataExtent);
+        map.zoomToExtent(task.getDataExtent());
+     });
+
+    }
+
+
+   
+</script>
 
     </head>
   <body onload="init()">
     <h1>OSM Tasking Server</h1>
-
-    Hold down <b>SHIFT</b> to select a bounding box area for checkout | 
-    Bounding Box: <input style="width:300px" id="id_checkout" type="text" value="" />
-    <input type="button" value="Checkout" onclick="checkout()" />
-
-    <!-- This will store a cookie which will go to the location first time 
-	 this page is loaded -->
-    <input type="button" value="Save Default Location" onclick="setCookie()" />
-    Status: <input id="id_status" type="text" value="" />
-    <br/>
-    Selected Feature: <input style="width:300px" id="id_selected" type="text" value="" />
-    <input type="button" value="Delete Selected Feature" onclick="deleteFeature()" />
-
-      
 
     <div id='map'></div>
     </body>

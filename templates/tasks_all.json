@@ -1,0 +1,18 @@
+{ "type": "FeatureCollection",
+  "features": [
+  {% for tc in qs %}
+    { "type": "Feature",
+      "geometry" : {{ tc.geom.geojson|safe }},
+      "properties" : {
+        "id" : {{ tc.id }},
+	"title" : "{{ tc.title }}",
+	"description" : "{{ tc.description }}"
+      }
+    }
+   {% if not forloop.last %},{% endif %} 
+  {% endfor %} 
+  ]
+}
+  
+
+  

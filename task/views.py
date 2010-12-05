@@ -63,20 +63,12 @@ def task_bbox(request,id):
 
 
 def tasks_json(request):
-    """ Return all the checkouts in geojson """
-    # seems like there is a bug where it doesn't transform the geojson string 
-    # need to do it manually for now 
-    # TODO: this should also return 4326
+    """ Return all the Tasks in geojson """
 
-    qs = Checkout.objects.all().transform(900913)
-
-    for co in qs:
-        #print co.geom.geojson
-        co.geojson = co.geom.geojson
+    qs = Task.objects.all().transform(900913)
 
 
-
-    return render_to_response("tasks.json", {"qs" : qs}, mimetype="application/json")
+    return render_to_response("tasks_all.json", {"qs" : qs}, mimetype="application/json")
 
 def densities_json(request):
     qs = Density.objects.all().transform(900913)
