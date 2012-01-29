@@ -8,10 +8,9 @@
 	"density" : {{ d.density }}
       }
     }
-   {% if not forloop.last %},{% endif %} 
-  {% endfor %} 
+   {% if not forloop.last %},{% endif %}
+  {% endfor %}
   ]
 }
-  
 
-  
+

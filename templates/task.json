@@ -7,7 +7,7 @@
         "id" : {{ t.id }}
       }
     }
-   {% if not forloop.last %},{% endif %} 
-  {% endfor %} 
+   {% if not forloop.last %},{% endif %}
+  {% endfor %}
   ]
 }

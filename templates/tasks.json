@@ -7,10 +7,9 @@
         "id" : {{ tc.id }}
       }
     }
-   {% if not forloop.last %},{% endif %} 
-  {% endfor %} 
+   {% if not forloop.last %},{% endif %}
+  {% endfor %}
   ]
 }
-  
 
-  
+

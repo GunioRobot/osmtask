@@ -9,10 +9,9 @@
 	"description" : "{{ tc.description }}"
       }
     }
-   {% if not forloop.last %},{% endif %} 
-  {% endfor %} 
+   {% if not forloop.last %},{% endif %}
+  {% endfor %}
   ]
 }
-  
 
-  
+

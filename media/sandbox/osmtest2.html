@@ -8,7 +8,7 @@
             var lon=-118.7312
             var zoom=15
 	    var map;
- 
+
             function init(){
                 map = new OpenLayers.Map ("map", {
                 controls:[
@@ -23,18 +23,18 @@
                 projection: new OpenLayers.Projection("EPSG:900913"),
                 displayProjection: new OpenLayers.Projection("EPSG:4326")
                 } );
- 
+
                 layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
                 map.addLayer(layerMapnik);
 	            layerTilesAtHome = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
                 map.addLayer(layerTilesAtHome);
 	    layerCycleMap = new OpenLayers.Layer.OSM.CycleMap("CycleMap");
 	    map.addLayer(layerCycleMap);
- 
+
 	            var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
- 
+
                 map.setCenter (lonLat, zoom);
- 
+
                 var layer = new OpenLayers.Layer.Vector("Polygon", {
                     strategies: [new OpenLayers.Strategy.Fixed()],
                     protocol: new OpenLayers.Protocol.HTTP({
@@ -43,9 +43,9 @@
                     }),
 		        projection: new OpenLayers.Projection("EPSG:4326")
                 });
- 
+
                 map.addLayers([layer]);
- 
+
             }
         </script>
     </head>
